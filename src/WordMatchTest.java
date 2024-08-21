@@ -5,90 +5,72 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class WordMatchTest {
+  private WordMatch game1;
+  private WordMatch game2;
+  private WordMatch game3;
 
-    private WordMatch game1;
-    private WordMatch game2;
+  @BeforeEach
+  void setUp() {
+    game1 = new WordMatch("mississippi");
+    game2 = new WordMatch("aaaabb");
+    game3 = new WordMatch("concatenation");
+  }
 
-    private WordMatch game3;
+  @AfterEach
+  void tearDown() {
+    game1 = null;
+    game2 = null;
+    game3 = null;
+  }
 
-    @BeforeEach
-    void setUp() {
+  @Test
+  void guessIsEmptyString() {
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> game1.scoreGuess(""));
 
-        game1 = new WordMatch("mississippi");
-        game2 = new WordMatch("aaaabb");
-        game3 = new WordMatch("concatenation");
+    String expectedMessage = "Your guess cannot be an empty String!";
+    String actualMessage = exception.getMessage();
 
-    }
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
 
-    @AfterEach
-    void tearDown() {
+  @Test
+  void guessLengthExceedsSecretLength() {
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> game1.scoreGuess("mississippi river"));
 
-        game1 = null;
-        game2 = null;
-        game3 = null;
+    String expectedMessage = "Your guess cannot exceed the number of characters in the Secret word";
+    String actualMessage = exception.getMessage();
 
-    }
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
 
-    @Test
-    void guessIsEmptyString() {
+  @Test
+  void scoreGuessOne() {
+    assertEquals(4, game1.scoreGuess("i"));
+    assertEquals(18, game1.scoreGuess("iss"));
+    assertEquals(36, game1.scoreGuess("issipp"));
+    assertEquals(121, game1.scoreGuess("mississippi"));
+  }
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> game1.scoreGuess(""));
+  @Test
+  void scoreGuessTwo() {
+    assertEquals(4, game2.scoreGuess("a"));
+    assertEquals(12, game2.scoreGuess("aa"));
+    assertEquals(18, game2.scoreGuess("aaa"));
+    assertEquals(16, game2.scoreGuess("aabb"));
+    assertEquals(0, game2.scoreGuess("c"));
+  }
 
-        String expectedMessage = "Your guess cannot be an empty String!";
-        String actualMessage = exception.getMessage();
+  @Test
+  void scoreGuessThree() {
+    assertEquals(9, game3.scoreGuess("ten"));
+    assertEquals(36, game3.scoreGuess("nation"));
+    assertEquals(9, game3.scoreGuess("con"));
+    assertEquals(9, game3.scoreGuess("cat"));
+  }
 
-        assertTrue(actualMessage.contains(expectedMessage));
-
-    }
-
-    @Test
-    void guessLengthExceedsSecretLength() {
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> game1.scoreGuess("mississippi river"));
-
-        String expectedMessage = "Your guess cannot exceed the number of characters in the Secret word";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
-
-    }
-
-    @Test
-    void scoreGuessOne() {
-
-        assertEquals(4, game1.scoreGuess("i"));
-        assertEquals(18, game1.scoreGuess("iss"));
-        assertEquals(36, game1.scoreGuess("issipp"));
-        assertEquals(121, game1.scoreGuess("mississippi"));
-
-    }
-
-    @Test
-    void scoreGuessTwo() {
-
-        assertEquals(4, game2.scoreGuess("a"));
-        assertEquals(12, game2.scoreGuess("aa"));
-        assertEquals(18, game2.scoreGuess("aaa"));
-        assertEquals(16, game2.scoreGuess("aabb"));
-        assertEquals(0, game2.scoreGuess("c"));
-
-    }
-
-    @Test
-    void scoreGuessThree() {
-
-        assertEquals(9, game3.scoreGuess("ten"));
-        assertEquals(36, game3.scoreGuess("nation"));
-        assertEquals(9, game3.scoreGuess("con"));
-        assertEquals(9, game3.scoreGuess("cat"));
-
-    }
-
-    @Test
-    void findBetterGuess() {
-
-        assertEquals("nation", game3.findBetterGuess("ten", "nation"));
-        assertEquals("con", game3.findBetterGuess("con", "cat"));
-
-    }
+  @Test
+  void findBetterGuess() {
+    assertEquals("nation", game3.findBetterGuess("ten", "nation"));
+    assertEquals("con", game3.findBetterGuess("con", "cat"));
+  }
 }
