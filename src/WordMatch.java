@@ -10,7 +10,7 @@ public class WordMatch {
     if (guess.length() > answer.length())
       throw new IllegalArgumentException("Your guess cannot exceed the number of characters in the Secret word");
 
-      // Reject guesses that are empty
+    // Reject guesses that are empty
     else if (guess.isEmpty())
       throw new IllegalArgumentException("Your guess cannot be an empty String!");
 
